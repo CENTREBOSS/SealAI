@@ -3,115 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemma 3 AI Mobile</title>
+    <title>Gemma 2 Fast AI</title>
     <style>
-        :root {
-            --bg: #0d0d0d;
-            --accent: #ffcc00;
-            --chat-bg: #161616;
-            --text: #ffffff;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        header {
-            padding: 15px;
-            background: #111;
-            text-align: center;
-            border-bottom: 2px solid var(--accent);
-            font-weight: bold;
-            color: var(--accent);
-        }
-
-        #chat-window {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .msg {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 15px;
-            font-size: 15px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .user {
-            align-self: flex-end;
-            background: var(--accent);
-            color: #000;
-            border-bottom-right-radius: 2px;
-        }
-
-        .ai {
-            align-self: flex-start;
-            background: #262626;
-            color: #fff;
-            border-bottom-left-radius: 2px;
-            border: 1px solid #333;
-        }
-
-        .input-container {
-            padding: 15px;
-            background: #111;
-            display: flex;
-            gap: 8px;
-            border-top: 1px solid #333;
-        }
-
-        textarea {
-            flex: 1;
-            background: #222;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            resize: none;
-            outline: none;
-        }
-
-        button {
-            background: var(--accent);
-            border: none;
-            padding: 0 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        /* Dizayn qismi o'zgarmadi - qora va sariq stil saqlandi */
+        :root { --bg: #0d0d0d; --accent: #ffcc00; --chat-bg: #161616; --text: #ffffff; }
+        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { padding: 15px; background: #111; text-align: center; border-bottom: 2px solid var(--accent); font-weight: bold; color: var(--accent); }
+        #chat-window { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 15px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .user { align-self: flex-end; background: var(--accent); color: #000; border-bottom-right-radius: 2px; }
+        .ai { align-self: flex-start; background: #262626; color: #fff; border-bottom-left-radius: 2px; border: 1px solid #333; }
+        .input-container { padding: 15px; background: #111; display: flex; gap: 8px; border-top: 1px solid #333; }
+        textarea { flex: 1; background: #222; border: 1px solid #444; color: #fff; padding: 10px; border-radius: 10px; resize: none; outline: none; }
+        button { background: var(--accent); border: none; padding: 0 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
         button:disabled { opacity: 0.5; }
-
-        .loader {
-            display: none;
-            font-size: 12px;
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 5px;
-        }
+        .loader { display: none; font-size: 12px; color: var(--accent); text-align: center; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-<header>GEMMA 3 AI</header>
+<header>GEMMA 2 LIGHT (TEZKOR)</header>
 
 <div id="chat-window">
-    <div class="msg ai">Salom! Men Gemma 3 modeliman. Yangi Router API orqali ulandim. Savolingizni bering!</div>
+    <div class="msg ai">Salom! Men Gemma 2 modeliman. Kichik bo'lganim uchun juda tez javob beraman. Savolingizni bering!</div>
 </div>
 
-<div id="loader" class="loader">Gemma o'ylamoqda...</div>
+<div id="loader" class="loader">Gemma javob yozmoqda...</div>
 
 <div class="input-container">
     <textarea id="user-input" rows="1" placeholder="Xabar..."></textarea>
@@ -120,9 +37,10 @@
 
 <script>
     const HF_TOKEN = "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";
-    // Yangi Router API manzili
     const API_URL = "https://router.huggingface.co/hf-inference/v1/chat/completions";
-    const MODEL = "google/gemma-3-12b-it";
+    
+    // MODELNI ALMASHTIRDIK: Gemma-2-2b-it (juda tezkor va bepul)
+    const MODEL = "google/gemma-2-2b-it";
 
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
@@ -157,28 +75,31 @@
                 body: JSON.stringify({
                     model: MODEL,
                     messages: [
+                        { role: "system", content: "Sen aqlli yordamchisan. Savollarga qisqa va aniq javob berasan." },
                         { role: "user", content: text }
                     ],
-                    max_tokens: 500
+                    max_tokens: 300,
+                    temperature: 0.7
                 })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // Yangi formatda javobni olish
                 const aiReply = data.choices[0].message.content;
                 addMessage(aiReply, 'ai');
             } else {
-                addMessage("Xatolik: " + (data.error?.message || "Model yuklanmoqda, qayta urinib ko'ring."), 'ai');
+                // Agar baribir yuklanayotgan bo'lsa, xabarni ko'rsatamiz
+                addMessage("Kutib turing: " + (data.error?.message || "Model uyg'onmoqda..."), 'ai');
             }
 
         } catch (error) {
-            addMessage("Ulanishda xato: Serverga bog'lanib bo'lmadi.", 'ai');
+            addMessage("Xato: Internet ulanishini tekshiring.", 'ai');
         } finally {
             userInput.disabled = false;
             sendBtn.disabled = false;
             loader.style.display = 'none';
+            userInput.focus();
         }
     }
 
